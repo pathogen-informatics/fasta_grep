@@ -21,8 +21,9 @@
 #define _PARSE_FASTA_H_
 
 #include "kseq.h"
+#include <regex.h>
 
 void search_for_query(char filename[], char ** search_queries, int number_of_queries);
-int does_string_contain_query(char * input_string, char * input_query);
+int does_string_contain_query(char * input_string, regex_t regex);
 
 #endif

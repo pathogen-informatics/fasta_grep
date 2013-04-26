@@ -3,6 +3,7 @@
 #include <string.h>
 #include <check.h>
 #include "check_parse_fasta.h"
+#include <regex.h>
 
 START_TEST (check_does_string_contain_query)
 {
@@ -10,8 +11,14 @@ START_TEST (check_does_string_contain_query)
 	char *input_query  = "abc";
 	char *non_matching_input_query  = "zzz";
 	
-	fail_unless(does_string_contain_query(input_string,input_query) == 1);
-	fail_unless(does_string_contain_query(input_string,non_matching_input_query) == 0);
+  regex_t  regex_input_query;
+	regcomp(&regex_input_query, input_query, 0);
+	
+	regex_t  regex_non_matching_input_query;
+	regcomp(&regex_non_matching_input_query, non_matching_input_query, 0);
+	
+	fail_unless(does_string_contain_query(input_string,regex_input_query) == 1);
+	fail_unless(does_string_contain_query(input_string,regex_non_matching_input_query) == 0);
 	
 }
 END_TEST
