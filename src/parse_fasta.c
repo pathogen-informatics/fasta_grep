@@ -75,7 +75,6 @@ void search_for_query(char filename[], char ** search_queries, int number_of_que
 	}
 	kseq_destroy(seq);
 	gzclose(fp);
-	return 1;
 }
 
 int does_string_contain_query(char * input_string, char * input_query)
