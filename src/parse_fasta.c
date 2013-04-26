@@ -52,9 +52,6 @@ void search_for_query(char filename[], char ** search_queries, int number_of_que
 		strcat(combined_search_query,search_queries[c]);
 	}
 	strcat(combined_search_query,")");
-	printf("%s\n",combined_search_query);
-
-	
 	regcomp(&regex_query, combined_search_query, REG_EXTENDED);
 	
 	gzFile fp;
