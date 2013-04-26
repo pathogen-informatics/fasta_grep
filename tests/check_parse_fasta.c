@@ -8,11 +8,11 @@
 START_TEST (check_does_string_contain_query)
 {
 	char *input_string = ">abc efg";
-	char *input_query  = "abc";
+	char *input_query  = "(abc)";
 	char *non_matching_input_query  = "zzz";
 	
   regex_t  regex_input_query;
-	regcomp(&regex_input_query, input_query, 0);
+	regcomp(&regex_input_query, input_query, REG_EXTENDED);
 	
 	regex_t  regex_non_matching_input_query;
 	regcomp(&regex_non_matching_input_query, non_matching_input_query, 0);
