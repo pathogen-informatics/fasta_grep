@@ -32,14 +32,17 @@ KSEQ_INIT(gzFile, gzread)
 void search_for_query(char filename[], char ** search_queries, int number_of_queries)
 {
 	int l;
-	int * found_queries; 
+	int * found_queries;
+	regex_t * regex_queries;
+	
+	regex_queries = (regex_t *)  malloc((number_of_queries+1)*sizeof(regex_t));
 	found_queries  = (int *)  malloc((number_of_queries+1)*sizeof(int));
 	int c= 0;
 	for(c=0; c<number_of_queries;c++)
 	{
 		found_queries[c] = 0;
+		regcomp(&regex_queries[c], search_queries[c], 0);
 	}
-	
 	
 	gzFile fp;
 	kseq_t *seq; 
@@ -56,7 +59,7 @@ void search_for_query(char filename[], char ** search_queries, int number_of_que
 			{
 				continue;
 			}
-			if(does_string_contain_query(seq->name.s, search_queries[i]) == 1 )
+			if(does_string_contain_query(seq->name.s, regex_queries[i]) == 1 )
 			{
 				printf(">%s\n", seq->name.s);
 				printf("%s\n", seq->seq.s);
@@ -77,17 +80,12 @@ void search_for_query(char filename[], char ** search_queries, int number_of_que
 	gzclose(fp);
 }
 
-int does_string_contain_query(char * input_string, char * input_query)
+int does_string_contain_query(char * input_string, regex_t regex)
 {
-	regex_t regex;
 	int reti;
-	
-	/* Compile regular expression */
-	reti = regcomp(&regex, input_query, 0);
-
 	/* Execute regular expression */
 	reti = regexec(&regex, input_string, 0, NULL, 0);
-	regfree(&regex);
+
 	if( !reti ){
 		return 1;
 	}
