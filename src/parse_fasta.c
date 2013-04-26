@@ -32,25 +32,46 @@ KSEQ_INIT(gzFile, gzread)
 void search_for_query(char filename[], char ** search_queries, int number_of_queries)
 {
 	int l;
+	int * found_queries; 
+	found_queries  = (int *)  malloc((number_of_queries+1)*sizeof(int));
+	int c= 0;
+	for(c=0; c<number_of_queries;c++)
+	{
+		found_queries[c] = 0;
+	}
+	
 	
 	gzFile fp;
-	kseq_t *seq;
+	kseq_t *seq; 
 	
 	fp = gzopen(filename, "r");
 	seq = kseq_init(fp);
-  
+ 
+	int query_found = 0; 
 	while ((l = kseq_read(seq)) >= 0) {
-		// If theres a match
 		int i = 0;
 		for(i=0; i< number_of_queries; i++)
 		{
+			if(found_queries[i] == 1)
+			{
+				continue;
+			}
 			if(does_string_contain_query(seq->name.s, search_queries[i]) == 1 )
 			{
 				printf(">%s\n", seq->name.s);
 				printf("%s\n", seq->seq.s);
-			}	
+				query_found++;
+				found_queries[i] = 1;
+			}
+			if(query_found == number_of_queries)
+			{
+				break;
+			}
 		}
-		
+		if(query_found == number_of_queries)
+		{
+			break;
+		}
 	}
 	kseq_destroy(seq);
 	gzclose(fp);
