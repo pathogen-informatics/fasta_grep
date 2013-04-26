@@ -66,7 +66,7 @@ void search_for_query(char filename[], char ** search_queries, int number_of_que
 		
 	 if(does_string_contain_query(seq->name.s, regex_query) == 1 )
 	 {
-	 	printf(">%s\n", seq->name.s);
+	 	printf(">%s %s\n", seq->name.s, seq->comment.s);
 	 	printf("%s\n", seq->seq.s);
 	 	query_found++;
 	 }
