@@ -1,10 +1,10 @@
 >matching_query
-AAAA
+MAAA
 BBBB
-CCCC
+CCC*
 >another_matching|some other description
-DDDD
-EEEE
+MDDD
+EEE*
 >sometotally other sequence
-FFFF
-GGGG
+MFFF
+GGG*

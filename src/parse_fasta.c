@@ -29,6 +29,35 @@
 
 KSEQ_INIT(gzFile, gzread)
 
+void filter_out_invalid_sequences(char filename[])
+{
+	int l;
+	
+	regex_t  regex_query;
+
+	gzFile fp;
+	kseq_t *seq; 
+	
+	fp = gzopen(filename, "r");
+	seq = kseq_init(fp);
+ 
+	while ((l = kseq_read(seq)) >= 0) {
+		int i = 0;
+		
+	 if(does_sequence_have_start_and_stop_codons(seq->seq.s, seq->seq.l)  == 1)
+	 {
+	 	printf(">%s %s\n", seq->name.s, seq->comment.s);
+	 	printf("%s\n", seq->seq.s);
+	 }
+	}
+	kseq_destroy(seq);
+	gzclose(fp);
+}
+
+
+
+
+
 void search_for_query(char filename[], char ** search_queries, int number_of_queries)
 {
 	int l;
@@ -64,7 +93,7 @@ void search_for_query(char filename[], char ** search_queries, int number_of_que
 	while ((l = kseq_read(seq)) >= 0) {
 		int i = 0;
 		
-	 if(does_string_contain_query(seq->name.s, regex_query) == 1 )
+	 if(does_string_contain_query(seq->name.s, regex_query) == 1  && does_sequence_have_start_and_stop_codons(seq->seq.s, seq->seq.l)  == 1)
 	 {
 	 	printf(">%s %s\n", seq->name.s, seq->comment.s);
 	 	printf("%s\n", seq->seq.s);
@@ -78,6 +107,27 @@ void search_for_query(char filename[], char ** search_queries, int number_of_que
 	}
 	kseq_destroy(seq);
 	gzclose(fp);
+}
+
+int does_sequence_have_start_and_stop_codons(char * input_string, int input_length)
+{
+	// Must begin with a start codon
+	if(input_string[0] != 'M')
+	{
+		return 0;
+	}
+	
+	// There shouldnt be a stop codon in the middle of the sequence
+	int i;
+	for(i = 1; i < input_length-2; i++)
+	{
+		if(input_string[i] == '*')
+		{
+			return 0;
+		}
+	}
+	
+		return 1;
 }
 
 int does_string_contain_query(char * input_string, regex_t regex)
