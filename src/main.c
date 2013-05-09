@@ -104,19 +104,21 @@ int main (argc, argv) int argc; char **argv;
 		
 		if(number_of_searches == 0)
 		{ 
-    		print_usage(stdout, EXIT_FAILURE);	
+			filter_out_invalid_sequences(fasta_filename);
 		}
-		
-    char ** search_queries;
-    search_queries = (char **) malloc((number_of_searches+1)*sizeof(char *));
-		for(i = 0; i < number_of_searches; i++)
+		else
 		{
-			search_queries[i] = (char *) malloc((1024)*sizeof(char));
-			strcpy(search_queries[i], argv[optind++]);
-		}
-		
-		search_for_query(fasta_filename, search_queries, number_of_searches);
-	  
+		  
+      	char ** search_queries;
+      search_queries = (char **) malloc((number_of_searches+1)*sizeof(char *));
+		  for(i = 0; i < number_of_searches; i++)
+		  {
+		  	search_queries[i] = (char *) malloc((1024)*sizeof(char));
+		  	strcpy(search_queries[i], argv[optind++]);
+		  }
+		  
+		  search_for_query(fasta_filename, search_queries, number_of_searches);
+    }
 
     exit(EXIT_SUCCESS);
 }
