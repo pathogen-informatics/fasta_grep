@@ -102,8 +102,8 @@ int main (argc, argv) int argc; char **argv;
 		int i = 0;
 		int number_of_searches =  argc - optind;
 		
-		if(number_of_searches == 0)
-		{ 
+    if(number_of_searches == 0)
+		{
 			filter_out_invalid_sequences(fasta_filename);
 		}
 		else
