@@ -111,15 +111,9 @@ void search_for_query(char filename[], char ** search_queries, int number_of_que
 
 int does_sequence_have_start_and_stop_codons(char * input_string, int input_length)
 {
-	// Must begin with a start codon
-	if(input_string[0] != 'M')
-	{
-		return 0;
-	}
-	
 	// There shouldnt be a stop codon in the middle of the sequence
 	int i;
-	for(i = 1; i < input_length-2; i++)
+	for(i = 0; i < input_length-1; i++)
 	{
 		if(input_string[i] == '*')
 		{
@@ -127,7 +121,29 @@ int does_sequence_have_start_and_stop_codons(char * input_string, int input_leng
 		}
 	}
 	
+	// Should usually be a start codon
+	int start_codon_found = 0;
+	if(input_string[0] == 'M')
+	{
+		start_codon_found = 1;
+	}
+	
+	
+	// Should usually be an end codon
+	int end_codon_found = 0;
+	if(input_string[input_length-1] == '*')
+	{
+		end_codon_found = 1;
+	}
+	
+	if(start_codon_found == 1 || end_codon_found == 1)
+	{
 		return 1;
+	}
+	else
+	{
+		return 0;
+	}
 }
 
 int does_string_contain_query(char * input_string, regex_t regex)
