@@ -93,7 +93,7 @@ void search_for_query(char filename[], char ** search_queries, int number_of_que
 	while ((l = kseq_read(seq)) >= 0) {
 		int i = 0;
 		
-	 if(does_string_contain_query(seq->name.s, regex_query) == 1  && does_sequence_have_start_and_stop_codons(seq->seq.s, seq->seq.l)  == 1)
+	 if(does_string_contain_query(seq->name.s, regex_query) == 1)
 	 {
 	 	printf(">%s %s\n", seq->name.s, seq->comment.s);
 	 	printf("%s\n", seq->seq.s);
