@@ -5,6 +5,21 @@
 #include "check_parse_fasta.h"
 #include <regex.h>
 
+
+START_TEST (check_number_of_valid_sequences)
+{
+	fail_unless(number_of_valid_sequences("../tests/data/file_with_duplicates") == 10);
+}
+END_TEST
+
+
+START_TEST (check_duplicate_removal)
+{
+	filter_out_invalid_sequences("../tests/data/file_with_duplicates");
+	fail_unless(1==1);
+}
+END_TEST
+
 START_TEST (check_does_string_contain_query)
 {
 	char *input_string = ">abc efg";
@@ -48,6 +63,8 @@ Suite * parse_fasta_suite(void)
   TCase *tc_parse_fasta = tcase_create("check_parsing_fasta_files");
   tcase_add_test(tc_parse_fasta, check_parsing_fasta_files);
 	tcase_add_test(tc_parse_fasta, check_does_string_contain_query);
+	tcase_add_test(tc_parse_fasta, check_duplicate_removal);
+	tcase_add_test(tc_parse_fasta, check_number_of_valid_sequences);
   suite_add_tcase(s, tc_parse_fasta);
   return s;
 }

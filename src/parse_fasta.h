@@ -25,5 +25,9 @@
 
 void search_for_query(char filename[], char ** search_queries, int number_of_queries);
 int does_string_contain_query(char * input_string, regex_t regex);
+int does_sequence_have_start_or_stop_codons(char * input_string, int input_length);
+int number_of_valid_sequences(char filename[]);
+void flag_largest_sequence_if_duplicates(int num_seqs,char ** sequence_names,int * sequence_lengths );
+void get_sequence_names_and_lengths(char filename[],int num_seqs,char ** sequence_names,int * sequence_lengths );
 
 #endif
