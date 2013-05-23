@@ -29,32 +29,129 @@
 
 KSEQ_INIT(gzFile, gzread)
 
-void filter_out_invalid_sequences(char filename[])
+
+int number_of_valid_sequences(char filename[])
 {
 	int l;
-	
-	regex_t  regex_query;
 
 	gzFile fp;
 	kseq_t *seq; 
 	
 	fp = gzopen(filename, "r");
 	seq = kseq_init(fp);
- 
+	
+	int num_seqs = 0;
+	
 	while ((l = kseq_read(seq)) >= 0) {
-		int i = 0;
 		
-	 if(does_sequence_have_start_and_stop_codons(seq->seq.s, seq->seq.l)  == 1)
+	 if(does_sequence_have_start_or_stop_codons(seq->seq.s, seq->seq.l)  == 1)
 	 {
-	 	printf(">%s %s\n", seq->name.s, seq->comment.s);
-	 	printf("%s\n", seq->seq.s);
+		num_seqs++;
+	 }
+	}
+	kseq_destroy(seq);
+	gzclose(fp);
+	
+	return num_seqs;
+}
+
+void filter_out_invalid_sequences(char filename[])
+{
+	int l;
+
+	int num_seqs = number_of_valid_sequences(filename);
+
+	// initalise an to hold the names of the sequences and their lengths
+	char ** sequence_names = (char **) malloc((num_seqs+1)*sizeof(char*));
+	int * sequence_lengths = (int *) malloc((num_seqs+1)*sizeof(int));
+	int j;
+	for(j=0;j<num_seqs; j++)
+	{
+	  sequence_names[j] = (char *) malloc(1024*sizeof(char));
+		sequence_lengths[j] = 0;
+  }
+
+	get_sequence_names_and_lengths( filename,num_seqs,sequence_names, sequence_lengths );
+	flag_largest_sequence_if_duplicates( num_seqs,sequence_names, sequence_lengths );
+	
+
+	gzFile fp;
+	kseq_t *seq; 
+	
+	fp = gzopen(filename, "r");
+	seq = kseq_init(fp);
+	int i =0;
+	while ((l = kseq_read(seq)) >= 0) 
+	{
+	 if(does_sequence_have_start_or_stop_codons(seq->seq.s, seq->seq.l)  == 1)
+	 {
+		if(sequence_lengths[i] != -1)
+		{
+		  printf(">%s %s\n", seq->name.s, seq->comment.s);
+	   	printf("%s\n", seq->seq.s);
+  	}
+		i++;
 	 }
 	}
 	kseq_destroy(seq);
 	gzclose(fp);
 }
 
+void flag_largest_sequence_if_duplicates(int num_seqs,char ** sequence_names,int * sequence_lengths )
+{
+	int i;
+	char current_sequence_name[1024];
+	strcpy(current_sequence_name, sequence_names[0]);
+	int current_largest_length = sequence_lengths[0];
+	int largest_index = 0;
+	
+	for(i = 0; i< num_seqs; i++)
+	{
+		if(strcmp(current_sequence_name, sequence_names[i]) == 0)
+		{
+			if(sequence_lengths[i] > current_largest_length)
+			{
+				sequence_lengths[largest_index] = -1;
+				largest_index = i;
+			}
+			else
+			{
+				sequence_lengths[i] = -1;
+			}
+		}
+		else
+		{
+			strcpy(current_sequence_name, sequence_names[i]);
+			current_largest_length = sequence_lengths[i];
+			largest_index = i;
+		}
+	}
+}
 
+
+void get_sequence_names_and_lengths(char filename[],int num_seqs,char ** sequence_names,int * sequence_lengths )
+{
+	int l;
+	gzFile fp;
+	kseq_t *seq; 
+	
+	fp = gzopen(filename, "r");
+	seq = kseq_init(fp);
+
+  // find the names and length of each sequence
+	int i = 0;
+	while ((l = kseq_read(seq)) >= 0) {
+	 if(does_sequence_have_start_or_stop_codons(seq->seq.s, seq->seq.l)  == 1)
+	 {
+			strcpy(sequence_names[i],seq->name.s);
+			sequence_lengths[i] = seq->seq.l;
+			i++;
+	 }
+	}
+
+	kseq_destroy(seq);
+	gzclose(fp);
+}
 
 
 
@@ -109,7 +206,7 @@ void search_for_query(char filename[], char ** search_queries, int number_of_que
 	gzclose(fp);
 }
 
-int does_sequence_have_start_and_stop_codons(char * input_string, int input_length)
+int does_sequence_have_start_or_stop_codons(char * input_string, int input_length)
 {
 	// There shouldnt be a stop codon in the middle of the sequence
 	int i;
