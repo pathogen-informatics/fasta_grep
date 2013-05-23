@@ -6,12 +6,11 @@ dist_data_DATA = kseq.h parse_fasta.h
 bin_PROGRAMS = fasta_grep
 fasta_grep_SOURCES = main.c
 fasta_grep_LDADD=-lz -lm libfasta_grep.la
-fasta_grep_LDFLAGS= -g -pg
 
 # libfasta_grep.so is our library
 lib_LTLIBRARIES = libfasta_grep.la
 libfasta_grep_la_SOURCES = parse_fasta.c
-libfasta_grep_la_LDFLAGS= -version-info 1:0  -g -pg
+libfasta_grep_la_LDFLAGS= -version-info 1:0
 
 # "make check" target
 TESTS = $(check_PROGRAMS)
