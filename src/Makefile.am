@@ -5,7 +5,7 @@ dist_data_DATA = kseq.h parse_fasta.h
 # fasta_grep is our top level progra
 bin_PROGRAMS = fasta_grep
 fasta_grep_SOURCES = main.c
-fasta_grep_LDADD=-lz -lm libfasta_grep.la
+fasta_grep_LDADD=-lm libfasta_grep.la -lz
 
 # libfasta_grep.so is our library
 lib_LTLIBRARIES = libfasta_grep.la
@@ -19,4 +19,4 @@ run_all_tests_SOURCES = \
 	../tests/check_parse_fasta.c \
 	../tests/run_all_tests.c
 run_all_tests_CFLAGS = -I../tests
-run_all_tests_LDADD = -lm -lz -lcheck libfasta_grep.la
+run_all_tests_LDADD = -lm -lcheck libfasta_grep.la -lz
