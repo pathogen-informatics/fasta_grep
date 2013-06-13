@@ -101,8 +101,8 @@ void flag_largest_sequence_if_duplicates(int num_seqs,char ** sequence_names,int
 {
 	int i;
 	char current_sequence_name[1024];
-	strcpy(current_sequence_name, sequence_names[0]);
-	int current_largest_length = sequence_lengths[0];
+	strcpy(current_sequence_name, "");
+	int current_largest_length = 0;
 	int largest_index = 0;
 	
 	for(i = 0; i< num_seqs; i++)
