@@ -220,7 +220,7 @@ int does_sequence_have_start_or_stop_codons(char * input_string, int input_lengt
 	
 	// Should usually be a start codon
 	int start_codon_found = 0;
-	if(input_string[0] == 'M')
+	if(input_string[0] == 'M' || input_string[0] == 'V')
 	{
 		start_codon_found = 1;
 	}
